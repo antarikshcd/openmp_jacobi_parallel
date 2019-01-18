@@ -19,27 +19,25 @@ contains
     k = 0
     aii = 1.0/4.0
     
-    !$omp parallel
-    !$omp master
-!$  nthreads = omp_get_num_threads()
-      print*,'num threads iter jacobi = ', nthreads
-    !$omp end master        
-    !$omp end parallel
     ! call system clock
     !call system_clock(count=count0, count_rate=c_rate)
     
     !$ t0 = omp_get_wtime()
      
    
-    !$omp parallel default(shared) private(i, j) 
+    !$omp parallel default(shared) private(i, j, tid)
+      !$omp master
+!$  nthreads = omp_get_num_threads()
+      print*,'num threads iter jacobi = ', nthreads
+      !$omp end master
     do while (norm > d .and. k < k_max)
         
-        !$omp single
+        !$omp single !puts up a implicit barrier and every thread runs it.
         sum = 0.0
-        !$omp end single
+       !$omp end single
         
        !!$omp parallel do num_threads(nthreads) default(shared) private(i, j) 
-        !$omp do
+        !$omp do ! Can we place it only for the inner do where all the code is?
         do j=2,N+1
             do i=2,N+1
                 T_new(i,j) = aii * (T_old(i-1,j) +&
@@ -65,6 +63,7 @@ contains
     print*,'norm=',norm, 'tid=',tid
     !$omp end single
     !print*,'d',d !debug
+    !!$omp parallel default(shared) private(i,j)
     !$omp do
     do j=2,N+1
         do i=2,N+1
@@ -72,7 +71,8 @@ contains
         end do
      end do      
     !$omp end do
-    print*,'*',  'tid=',tid
+    !!$omp end parallel
+    !print*,'*',  'tid=',tid
 
     enddo
     !$omp end parallel

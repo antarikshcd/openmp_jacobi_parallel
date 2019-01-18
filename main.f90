@@ -8,6 +8,8 @@ use m_init
 use m_frobenius_norm
 use m_iter_jacobi
 use m_iter_gauss_siedel
+use m_output_data
+use m_write_output
 use m_output
 implicit none
 
@@ -31,8 +33,12 @@ call alloc(N,T_new,info)
 !print*,'T_new is allocated',info !debug
 call alloc(N,f,info)
 !print*,'f is allocated',info !debug
-call alloc(N,f_theo,info)
+call alloc(N,error_ftheo,info)
 !print*,'f is allocated',info !debug
+call alloc(N,cart_x,info)
+!print*,'cartesian is allocated',info !debug
+call alloc(N,cart_y,info)
+!print*,'cartesian is allocated',info !debug
 
 !init
 call init(N,T_old,T_new,f,X_start,X_end,Y_start,Y_end,A_X,B_X,A_Y,B_Y)
@@ -42,8 +48,11 @@ call init(N,T_old,T_new,f,X_start,X_end,Y_start,Y_end,A_X,B_X,A_Y,B_Y)
 call iter_jacobi(N,T_old,T_new,f,k_max,d,X_start, X_end, Y_start, Y_end)
 !call iter_gauss_siedel(N,T_old,T_new,f,k_max,d,X_start, X_end, Y_start, Y_end)
 
+!call output data 
+call output_data(N,A_X,B_X,A_Y,B_Y, T_new, error_ftheo, cart_x, cart_y)
 !result
-call output(N,T_old,T_new,f,f_theo,A_X,B_X,A_Y,B_Y)
+call write_output(N, T_old, T_new, f, error_ftheo, A_X, B_X, A_Y, B_Y, cart_x, cart_y)
+!call output(N,T_old,T_new,f,f_theo,A_X,B_X,A_Y,B_Y)
 
 print*,'1'
 
@@ -54,7 +63,7 @@ deallocate(T_new,STAT=info)
 !print*,'T_new is deallocated',info !debug
 deallocate(f,STAT=info)
 !print*,'f is deallocated',info !debug
-deallocate(f_theo,STAT=info)
+deallocate(error_ftheo,STAT=info)
 !print*,'f_theo is deallocated',info !debug
 
 print*,'Program has ended!!!'

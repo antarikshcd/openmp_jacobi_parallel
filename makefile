@@ -15,7 +15,7 @@ CC          = cc
 DEBUG       = -C
 DEBUG       = 
 OPT         = 
-FFLAGS      = $(OPT) -free -xO3 -g -fast -xopenmp -xvpara $(DEBUG)
+FFLAGS      = $(OPT) -free -g -fast -xopenmp $(DEBUG) #-xvpara -xO3
 CFLAGS      = -O
 LD          = $(F77)
 LDFLAGS     = 
@@ -61,6 +61,8 @@ all: $(TARGET)
 #----------------------------------------------------------------------
 OBJS =	global_data.o\
 	output.o\
+	write_output.o\
+	output_data.o\
 	iter_jacobi.o\
 	iter_gauss_siedel.o\
 	frobenius_norm.o\
@@ -79,6 +81,10 @@ main.o: main.f90 input.o alloc.o init.o init_test.o iter_jacobi.o output.o globa
 	$(F77) $(FFLAGS)  -c main.f90
 output.o: output.f90 global_data.o
 	$(F77) $(FFLAGS)  -c output.f90
+write_output.o: write_output.f90 global_data.o
+	$(F77) $(FFLAGS)  -c write_output.f90	
+output_data.o: output_data.f90 global_data.o
+	$(F77) $(FFLAGS)  -c output_data.f90		
 iter_gauss_siedel.o: iter_gauss_siedel.f90 global_data.o frobenius_norm.o
 	$(F77) $(FFLAGS)  -c iter_gauss_siedel.f90
 iter_jacobi.o: iter_jacobi.f90 global_data.o frobenius_norm.o

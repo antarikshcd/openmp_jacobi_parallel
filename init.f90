@@ -27,7 +27,7 @@ contains
 
     !$omp parallel default(shared)
     ! loop 1
-    !$omp do private(i,j)
+    !$omp do private(i,j) !add scheduling, collapse !use sections to separate independednt pieces of code
     do j=1,N+2
         do i=1,N+2
              f(i,j) = 0
