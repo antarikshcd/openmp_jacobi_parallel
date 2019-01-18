@@ -32,12 +32,12 @@ contains
       !$omp end master
     do while (norm > d .and. k < k_max)
         
-        !$omp single !puts up a implicit barrier and every thread runs it.
+       !$omp single !puts up a implicit barrier and every thread runs it.
         sum = 0.0
        !$omp end single
         
        !!$omp parallel do num_threads(nthreads) default(shared) private(i, j) 
-        !$omp do ! Can we place it only for the inner do where all the code is?
+        !$omp do schedule(runtime) reduction(+ : sum) ! Can we place it only for the inner do where all the code is?
         do j=2,N+1
             do i=2,N+1
                 T_new(i,j) = aii * (T_old(i-1,j) +&
@@ -45,9 +45,9 @@ contains
                                         T_old(i,j-1) +&
                                         T_old(i,j+1) +&
                                         delta_X*delta_Y * f(i,j))
-                !$omp critical(cric_sum)
+               ! !$omp critical(cric_sum)
                 sum = sum + (T_new(i,j) - T_old(i,j))*(T_new(i,j) - T_old(i,j))
-                !$omp end critical(cric_sum)
+               ! !$omp end critical(cric_sum)
                  !print*,'sum =', sum,'tid= ', tid   
             enddo
         !$  tid = omp_get_thread_num()
@@ -64,13 +64,13 @@ contains
     !$omp end single
     !print*,'d',d !debug
     !!$omp parallel default(shared) private(i,j)
-    !$omp do
+    !$omp do schedule(runtime)
     do j=2,N+1
         do i=2,N+1
            T_old(i,j) = T_new(i,j)
         end do
      end do      
-    !$omp end do
+    !$omp end do nowait
     !!$omp end parallel
     !print*,'*',  'tid=',tid
 

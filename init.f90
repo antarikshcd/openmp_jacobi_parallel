@@ -112,7 +112,7 @@ contains
     do j=2,N+2
         T_new(N+2,j) = 20
     enddo
-    !$omp end do 
+    !$omp end do nowait
     !$omp end parallel
 
     !print*,'T_old', T_old
