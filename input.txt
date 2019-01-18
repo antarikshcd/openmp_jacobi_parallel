@@ -1,5 +1,5 @@
 &list
-N = 32
+N = 700
 X_start = -1
 X_end = 1
 Y_start = -1

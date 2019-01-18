@@ -59,8 +59,8 @@ contains
 
     ! calculate the norm
     norm = sum ** 0.5
-    print*,'k=',k, 'tid=',tid
-    print*,'norm=',norm, 'tid=',tid
+    !print*,'k=',k, 'tid=',tid
+    !print*,'norm=',norm, 'tid=',tid
     !$omp end single
     !print*,'d',d !debug
     !!$omp parallel default(shared) private(i,j)
